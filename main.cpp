@@ -20,10 +20,14 @@ QVector <QString> chafont_faces {
     "Tahoma",
     "Helvetica",
     "Verdana",
-    "Roboto"
+    "Roboto",
+    "Lucida Console",
+    "System",
+    "Microsoft Sans Serif"
 };
 
 QString output_folder = QLatin1String("/tmp/");
+//QString output_folder = QLatin1String("C:\\Users\\test\\Documents\\font_metrics\\");
 
 QString text = QLatin1String("0123456789");
 static int text_length = text.size();
