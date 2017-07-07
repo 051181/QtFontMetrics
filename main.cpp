@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QFile>
+#include <QtCore/qmath.h>
 
 #define MIN_FONT_SIZE 6
 #define MAX_FONT_SIZE 32
@@ -23,7 +24,7 @@ QVector <QString> chafont_faces {
     "Roboto",
     "Lucida Console",
     "System",
-    "Microsoft Sans Serif"
+    "MS Sans Serif"
 };
 
 QString output_folder = QLatin1String("/tmp/");
@@ -56,29 +57,31 @@ QJsonObject calculateMetric(QFont font, QString fontName) {
 //        font.setPixelSize(font_size);
         font.setPointSize(font_size);
         QFontMetrics fm(font);
-        pWidth = fm.width(text, -1) / text_length; // width
+        pWidth = qCeil(fm.width(text, -1) / text_length); // width
         pAverageCharWidth = fm.averageCharWidth();
         if ( pAverageCharWidth > pWidth) {
             pWidth = pAverageCharWidth;
         }
-        pHeight = fm.height(); // height
+        pHeight = fm.height() - 1; // height - qt aggiunge 1 x baseline, windows non lo fa
         pMaxWidth = fm.maxWidth(); // max width
 
-        widewidth = ( pWidth + pMaxWidth ) / 2; // wide width
+        widewidth = qCeil(( pWidth + pMaxWidth ) / 2); // wide width
 
         pFullHeight = fm.leading() + pHeight; // full height
 
 //        qDebug() << fm.boundingRect(fontName);
 
-//        QRectF rect = fm.boundingRect(fontName);
+//        QRectF rect = fm.boundingRect(text);
 //        int rectW = rect.width() / 10;
-//        int rectH = rect.height();
+//        int rectH = rect.height() - 1;
+//        int rectFullHeight = fm.leading() + rectH;
 
         QJsonObject jsonFontEl;
         jsonFontEl.insert("w", pWidth);
         jsonFontEl.insert("h", pHeight);
 //        jsonFontEl.insert("rw", rectW);
 //        jsonFontEl.insert("rh", rectH);
+//        jsonFontEl.insert("rfh", rectFullHeight);
         jsonFontEl.insert("ww", widewidth);
         jsonFontEl.insert("mw", pMaxWidth);
         jsonFontEl.insert("fh", pFullHeight);
